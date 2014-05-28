@@ -48,6 +48,5 @@ class orgdc::config(
     creates   => "/tmp/${file_name}",
     onlyif    => "test ! -f /tmp/${file_name}",
     timeout   => 0,
-    require   => File["${orgdc::tomcat_basedir}/webapps"],
   }
 }
