@@ -1,0 +1,89 @@
+{       
+    "type":"Composite",
+    "name"  : "top/junior",
+    "description" : "Mapping fields specific to junior posts",
+    "required":["grade", "generic_job_title"],
+    "bind" : {
+        "$grade_base" : "{$org_def_base}/{$org_id}/grade",
+        "$grade" : "{grade.toCleanSegment()}",
+        "$pb_base" : "{$org_def_base}/{$org_id}/payband"
+    },
+    "templates" : [
+        "junior/post",
+        "junior/grade",
+        "junior/payband",
+        "junior/salary-range"
+    ],
+    "oneOffs":[
+        {
+            "name":"junior/grade-dataset",
+            "@id":"<{$grade_base}>",
+            "<rdf:type>":["<void:Dataset>", "<skos:ConceptScheme>"],
+            "<skos:prefLabel>":"{parent_department.value + ' Junior Civil Service Grades'}@en"
+        },
+        {
+            "name":"junior/payband-dataset",
+            "@id":"<{$pb_base}>",
+            "<rdf:type>":["<void:Dataset>", "<skos:ConceptScheme>"],
+            "<skos:prefLabel>":"{parent_department.value + ' Junior Civil Service Paybands'}@en"
+        },
+        {
+            "name" : "junior/post-dataset",
+            "@id" : "<{$dataset}/juniorPosts>",
+            "<void:exampleResource>" : "<{$dataset}/juniorPosts/1>",
+            "<dct:license>" : "<http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/>",
+            "<qb:structure>" : "<http://reference.data.gov.uk/def/organogram/junior-posts>",
+            "<dct:temporal>" : "<{$date}>",
+            "<dct:title>" : "{parent_department} Junior Post FTEs at {$versionDate} Dataset@en",
+            "<rdf:type>" : [ "<void:Dataset>", "<qb:DataSet>"],
+            "<void:vocabulary>" : [ "<qb:>", "<{$def_org}>", "<rdfs:>"],
+            "^<void:subset>" : "<{$dataset}>"
+        }
+    ],
+    "referenced":[
+        {
+            "name":"junior/post",
+            "@id":"<{$dataset}/juniorPosts/{$row.number}>",
+            "<rdf:type>": "<qb:Observation>",
+            "<qb:dataSet>" : "<{$dataset}/juniorPosts>",
+            "<{$def_org}/date>" : "<{$date}>",
+            "<{$def_org}/fullTimeEquivalent>" : "{number_of_posts_in_fte}",
+            "<{$def_org}/grade>" : "<{$grade_base}/{$grade}>",
+            "<{$def_org}/job>" : "<{$def_job}/{generic_job_title.toCleanSegment()}>",
+            "<rdfs:label>" : "{grade} {generic_job_title} ({professional_occupational_group}) in {unit} reporting to post {reporting_senior_post} FTE at {$versionDate}@en",
+            "<{$def_org}/profession>": "<{professional_occupational_group.map(['profession', 'profession-alt'], $def_profession + '/' + professional_occupational_group.toCleanSegment().value)}>",
+            "<{$def_org}/reportingTo>" : "<{$organisation}/post/{reporting_senior_post}>",
+            "<{$def_org}/unit>" : "<{$unit}>"
+        },
+        {
+            "name":"junior/grade",
+            "@id":"<{$grade_base}/{$grade}>",
+            "<rdf:type>":"<{$def_grade}/Grade>",
+            "<skos:topConceptof>":"<{$grade_base}>",
+            "^<skos:hasTopConcept>":"<{$grade_base}>",
+            "<skos:prefLabel>":"{grade.lang('en')}",
+            "<{$def_cspb}/payBand>":"<{$pb_base}/{$grade}>"
+        },
+        {
+            "name":"junior/payband",
+            "required" :["payscale_minimum_", "payscale_maximum_"],
+            "@id" : "<{$pb_base}/{$grade}>",
+            "<rdf:type>" : "<{$def_cspb}/PayBand>",
+            "<skos:topConceptof>":"<{$pb_base}>",
+            "^<skos:hasTopConcept>":"<{$pb_base}>",
+            "<{$def_gov}/salaryRange>":"<{$salary_base}/{payscale_minimum_}-{payscale_maximum_}>",
+            "<skos:prefLabel>" : "{grade.value} Payband@en}"
+        },
+        {
+            "name":"junior/salary-range",
+            "required" :["payscale_minimum_", "payscale_maximum_"],
+            "@id":"<{$salary_base}/{payscale_minimum_}-{payscale_maximum_}>",
+            "<rdfs:label>":"£{payscale_minimum_} - £{payscale_maximum_}",
+            "<{$def_gov}/lowerBound>":"{payscale_minimum_}",
+            "<{$def_gov}/upperBound>":"{payscale_maximum_}",
+            "<rdf:type>":"<{$def_gov}/SalaryRange>",
+            "<{$def_ref}/uriSet>":"<{$salary_base}>",
+            "<foaf:page>":"<{$dataset}>"
+        }
+    ]
+}

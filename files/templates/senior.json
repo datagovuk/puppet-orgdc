@@ -1,0 +1,113 @@
+{
+    "type":"Composite",
+    "name":"top/senior",
+    "required" : ["post_unique_reference", "reports_to_senior_post", "$organisation"],
+    "bind":[
+              {
+                "$post":"{$organisation}/post/{post_unique_reference}",
+                "$reportsToPost":"{reports_to_senior_post == 'XX' ? nullValue() : $organisation.value + '/post/' + reports_to_senior_post.value}",
+                "$mailto" : "{empty(contact_e_mail) ? nullValue() : contact_e_mail.replaceAll(' ','-').replaceAll('\u00a0','')}"
+              }, {
+                "$holder":"{$dataset}/person{$row.number}",
+                "$tenure":"{$dataset}/tenure{$row.number}"
+              }
+            ],
+    "templates":[
+        "senior/post",
+        "senior/salary range",
+        "senior/holder",
+        "senior/holder-email",
+        "senior/tenure",
+        "senior/salary cost"
+    ],
+    "oneOffs" : [
+        {
+            "name" : "senior/salary cost dataset",
+            "@id" : "<{$dataset}/salaryCostOfReports>",
+            "<void:exampleResource>" : "<{$dataset}/salaryCostOfReports/1>",
+            "<dct:license>" : "<http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/>",
+            "<qb:structure>" : "<http://reference.data.gov.uk/def/organogram/salary-cost-of-reports>",
+            "<dct:temporal>" : "<{$date}>",
+            "<dct:title>" : "{parent_department} Salary Cost of Reports at {$versionDate} Dataset ",
+            "<rdf:type>" : [ "<void:Dataset>", "<qb:DataSet>"],
+            "<void:vocabulary>" : [ "<qb:>", "<{$def_org}>", "<rdfs:>"],
+            "^<void:subset>" : "<{$dataset}>"
+        }
+    ],
+    "referenced":[
+        {
+            "name":"senior/post",
+            "required" : ["$post"],
+            "@id":"<{$post}>",
+            "<rdfs:label>":"{job_title.lang('en')}",
+            "<skos:prefLabel>":"{job_title.lang('en')}",
+            "<rdf:type>":[
+                "<{$def_gov}/CivilServicePost>",
+                "<{$def_gov}/SeniorCivilServicePost>"
+            ],
+            "<{$def_gov}/postIn>":[
+                "<{$organisation}>",
+                "<{$unit}>"
+            ],
+            "<org:reportsTo>":"<{$reportsToPost}>",
+            "<{$def_csps}/postStatus>":"<{$def_csps}/{name.toLowerCase=='vacant' || name.toLowerCase=='eliminated' ? name.toLowerCase() : 'current'}>",
+            "<rdfs:comment>":[
+                "{notes.lang('en')}",
+                "{job_team_function.lang('en')}"
+            ],
+            "<{$def_grade}/grade>":"<{$def_grade}/{grade}>",
+            "<skos:notation>":"{post_unique_reference}",
+            "<{$def_gov}/salaryRange>":"<{$salary_base}/{actual_pay_floor_}-{actual_pay_ceiling_}>",
+            "<{$def_gov}/heldBy>":"<{$holder}>",
+            "^<{$def_gov}/holdsPost>":"<{$holder}>",
+            "^<{$def_gov}/hasPost>" : "<{$unit}>"
+        },
+        {
+            "name":"senior/salary range",
+            "required" : ["$salary_base", "actual_pay_floor_", "actual_pay_ceiling_"],
+            "@id":"<{$salary_base}/{actual_pay_floor_}-{actual_pay_ceiling_}>",
+            "<rdf:type>":"<{$def_gov}/SalaryRange>",
+            "<{$def_gov}/lowerBound>":"{actual_pay_floor_}",
+            "<{$def_gov}/upperBound>":"{actual_pay_ceiling_}",
+            "<rdfs:label>":"{lang('£'+actual_pay_floor_+'-£'+actual_pay_ceiling_,'en')}"
+        },
+        {
+            "name":"senior/holder",
+            "required" : ["$holder"],
+            "@id":"<{$holder}>",
+            "<rdf:type>":"<foaf:Person>",
+            "<foaf:mbox>":"<mailto:{$mailto}>",
+            "<foaf:name>":"{name}",
+            "<foaf:phone>":"{contact_phone}",
+            "<{$def_profession}/profession>": "<{professional_occupational_group.map(['profession', 'profession-alt'], $def_profession + '/' + professional_occupational_group.toCleanSegment().value)}>",
+            "<foaf:page>" : "<{$dataset}>",
+            "<{$def_gov}/tenure>" : "<{$tenure}>"
+        },
+        {
+            "name" : "senior/holder-email",
+            "@id" : "<mailto:{$mailto}>",
+            "<rdfs:label>" : "{contact_e_mail}",
+            "<rdf:type>" : "<vcard:Email>"
+        },
+        {
+            "name" : "senior/tenure",
+            "@id" : "<{$tenure}>",
+            "<rdf:type>" : ["<org:Membership>", "<{$def_gov}/Tenure>"],
+            "<{$def_gov}/postHolder>" : "<{$holder}>",
+            "<{$def_gov}/post>" : "<{$post}>",
+            "<foaf:page>" : "<{$dataset}>",
+            "<rdfs:label>" : "{name} as {job_title}",
+            "<{$def_gov}/fullTimeEquivalent>" : "{fte.datatype('xsd:decimal')}"
+        },
+        {
+            "name" : "senior/salary cost",
+            "@id" : "<{$dataset}/salaryCostOfReports/{$row.number}>",
+            "<qb:dataSet>" : "<{$dataset}/salaryCostOfReports>",
+            "<rdf:type>": "<qb:Observation>",
+            "<{$def_org}/date>" : "<{$date}>",
+            "<rdfs:label>" : "{job_title} Salary Cost of Reports on {$versionDate}@en",
+            "<{$def_org}/post>" : "<{$post}>",
+            "<{$def_org}/salaryCostOfReports>" : "{salary_cost_of_reports_}"
+        }
+    ]
+}
