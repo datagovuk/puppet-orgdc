@@ -38,7 +38,7 @@ class orgdc::config(
     owner     => $tomcat_user,
     group     => $tomcat_group,
     source    => "/tmp/${file_name}",
-    require   => [Package['tomcat7'], File["${orgdc::tomcat_basedir}/webapps/ROOT"], Exec['orgdc-download']],
+    require   => [Package['tomcat7'], Exec['orgdc-download']],
   }
 
   # download org-dc war to  /tmp:
