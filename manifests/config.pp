@@ -45,6 +45,7 @@ class orgdc::config(
   exec { 'orgdc-download':
     command   => "rm -rf ${orgdc::tomcat_basedir}/webapps/ROOT; wget --no-check-certificate ${download_site}/${file_name}",
     cwd       => '/tmp',
+    path      => "/usr/bin/:/bin/:usr/local/bin",
     creates   => "/tmp/${file_name}",
     onlyif    => "test ! -f /tmp/${file_name}",
     timeout   => 0,

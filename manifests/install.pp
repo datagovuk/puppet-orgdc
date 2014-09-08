@@ -14,4 +14,7 @@ class orgdc::install {
     }
   }
 
+  include fuseki
+  include elda
+
 }
