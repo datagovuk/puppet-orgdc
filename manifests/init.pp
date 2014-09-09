@@ -21,7 +21,7 @@ class orgdc (
   class { 'orgdc::install': } ->
   class { 'orgdc::config':
     config => $config,
-  } ~>
-  Class['tomcat::service'] ->
-  Class['orgdc']
+  } #~>
+  #Class['tomcat::service'] ->
+  #Class['orgdc']
 }
