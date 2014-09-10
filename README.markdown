@@ -12,7 +12,7 @@
 
 ##Overview
 
-This module installs org-dc (develo[ped by epimorphics) from git into Tomcat 7 and configures it with either a custom configuration or
+This module installs org-dc (developed by epimorphics) from git into Tomcat 7 and configures it with either a custom configuration or
 the example configuration distributed with the binaries.
 
 ##Module Description
@@ -42,7 +42,7 @@ You need to have a working installation of tomcat 7. You can use https://github.
 ##Usage
 
 
- If you would like to include your own configuration, you can specifiy it as follows:
+ If you would like to include your own configuration, you can specify it as follows:
 
  class { 'orgdc':
     source_dir => "puppet:///modules/my_conf_module/",
@@ -53,7 +53,7 @@ You need to have a working installation of tomcat 7. You can use https://github.
 
 ##Limitations
 
-Works with debian based distributions and installs org-dc
+Works with Debian-based distributions and installs org-dc
 
 ##Development
 

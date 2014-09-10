@@ -9,7 +9,8 @@
 #   the specified source (parameter: source => $source_dir , recurse => true)
 #
 class orgdc (
-  $source_dir = 'UNSET',
+  $fuseki_db_source = $orgdc::params::fuseki_db_source,
+  $source_dir = 'UNSET'
 ) inherits orgdc::params {
 
   $config = $source_dir ? {
@@ -20,7 +21,7 @@ class orgdc (
   class { 'orgdc::install': } ->
   class { 'orgdc::config':
     config => $config,
-  } ~>
-  Class['tomcat::service'] ->
-  Class['orgdc']
+  } #~>
+  #Class['tomcat::service'] ->
+  #Class['orgdc']
 }
