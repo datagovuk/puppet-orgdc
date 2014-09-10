@@ -26,6 +26,12 @@ class orgdc::config(
   } ~>
   Service['fuseki']
 
+  file { [$orgdc::params::organogram_lib,
+          $orgdc::params::organogram_merge]:
+    ensure    => directory,
+    mode      => '0777',
+  }
+
   #include orgdc::params
 
   #$tomcat_home              = $::orgdc::params::tomcat_home
