@@ -49,4 +49,12 @@ class orgdc::config(
     onlyif    => "test ! -f /tmp/${file_name}",
     timeout   => 0,
   }
+
+  # configure defaults for tomcat and fuseki
+  file { '/etc/default/fuseki':
+    source    => 'puppet:///modules/orgdc/etc/default/fuseki'
+  }
+  file { '/etc/default/tomcat${tomcat::params::version}':
+    source    => 'puppet:///modules/orgdc/etc/default/tomcat${tomcat::params::version}'
+  }
 }
