@@ -33,11 +33,4 @@ class orgdc::config(
     mode      => '0777',
   }
 
-  # configure defaults for tomcat and fuseki
-  file { '/etc/default/fuseki':
-    source    => 'puppet:///modules/orgdc/etc/default/fuseki'
-  }
-  file { '/etc/default/tomcat${tomcat::params::version}':
-    source    => 'puppet:///modules/orgdc/etc/default/tomcat${tomcat::params::version}'
-  }
 }
