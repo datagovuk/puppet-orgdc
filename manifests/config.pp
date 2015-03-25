@@ -33,4 +33,9 @@ class orgdc::config(
     mode      => '0777',
   }
 
+  file { '/etc/default/fuseki':
+    ensure => 'file',
+    source    => 'puppet:///modules/orgdc/etc/default/fuseki',
+  }
+
 }
