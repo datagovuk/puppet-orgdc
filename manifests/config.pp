@@ -32,5 +32,10 @@ class orgdc::config(
     ensure    => directory,
     mode      => '0777',
   }
+
+  file {"/etc/apache2/sites-enabled/15-reference.conf":
+    ensure => present,
+    source => 'puppet:///etc/apache2/sites-available/reference',
+  }
   
 }
